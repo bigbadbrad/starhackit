@@ -5,6 +5,7 @@ import paper from "components/Paper";
 import input from "mdlean/lib/input";
 import spinner from "components/spinner";
 import formGroup from "components/FormGroup";
+import button from "mdlean/lib/button";
 
 export default context => {
   const { tr } = context;
@@ -14,26 +15,28 @@ export default context => {
   const UserIdInput = input(context);
   const UsernameInput = input(context);
   const EmailInput = input(context);
+  const Button = button(context);
 
   function UserComponent({ store }) {
+    const { errors } = store;
     if (store.opGet.loading) {
       return h(spinner(context));
     }
-    const user = store.opGet.data;
-    if (!user) {
-      return null;
-    }
+    // const user = store.opGet.data;
+    // if (!user) {
+    //   return null;
+    // }
     return (
       <Page className="user-view">
         <Paper>
           <h3>{tr.t("User")}</h3>
           <FormGroup>
-            <UserIdInput id="id" value={user.id} disabled label={tr.t("Id")} />
+            <UserIdInput id="id" value={store.id} disabled label={tr.t("Id")} />
           </FormGroup>
           <FormGroup>
             <UsernameInput
               id="username"
-              value={user.username}
+              value={store.username}
               disabled
               label={tr.t("Username")}
             />
@@ -41,9 +44,29 @@ export default context => {
           <FormGroup>
             <EmailInput
               id="email"
-              value={user.email}
+              value={store.email}
               disabled
               label={tr.t("Email")}
+            />
+          </FormGroup>
+          <FormGroup>
+            <EmailInput
+              id="age"
+              value={store.age}
+              // disabled
+              error={errors.age && errors.age[0]}
+              rows={1}
+              onChange={e => {
+                store.age = e.target.value;
+              }}
+              label={tr.t("Age")}
+            />
+          </FormGroup>
+          <FormGroup>
+            <Button
+              raised
+              onClick={() => store.update(store.id)}
+              label={tr.t("Update User")}
             />
           </FormGroup>
         </Paper>
